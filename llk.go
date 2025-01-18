@@ -39,11 +39,11 @@ type tokeniser struct {
 	loc int
 }
 
-func newTokeniser(r *strings.Reader) tokeniser {
+func NewTokeniser(r *strings.Reader) *tokeniser {
 	s := &scanner.Scanner{}
 	s.Init(r)
 
-	return tokeniser{
+	return &tokeniser{
 		scanner: s,
 	}
 }
