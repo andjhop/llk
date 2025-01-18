@@ -1,5 +1,10 @@
 package types
 
+import (
+	"strconv"
+	"text/scanner"
+)
+
 // Parser is the basic interface for a parser. A Parser is simply an
 // object which defines a Parse method accepting a lexical stream
 // emitted by a Tokensier and ultimately produces some result.
@@ -128,6 +133,49 @@ func NewTerm(name string, category rune) Term {
 			return s, nil
 		},
 	}
+}
+
+// Text returns a Parser which parses a unicode character and only
+// succeeds if the parsed token text matches the character specified by
+// the category
+func Text(category rune) Term {
+	return NewTerm("text", category)
+}
+
+// Id returns a Parser which parsers a go idenitfier and only succeeds
+// if the parsed token text exactly matches the string specified by s
+func Id(s string) Term {
+	return NewTerm("identifer", scanner.Ident).
+		WithExactMatch(s)
+}
+
+// Int returns a Parser which parsers a go decimal literal and returns
+// an returns the corresponding value as an int64 in the parser
+// result
+func Int() Term {
+	return NewTerm("integer", scanner.Int).
+		WithConverter(func(s string) (any, error) {
+			return strconv.ParseInt(s, 10, 64)
+		})
+}
+
+// Int returns a Parser which parsers a go floating point literal and
+// returns an returns the corresponding value as an float64 in the
+// parser result
+func Float() Term {
+	return NewTerm("float", scanner.Float).
+		WithConverter(func(s string) (any, error) {
+			return strconv.ParseFloat(s, 64)
+		})
+}
+
+// String returns a Parser which parsers a go quoted string literal and
+// returns an returns the corresponding value as astring
+func String() Term {
+	return NewTerm("quoted string", scanner.String).
+		WithConverter(func(s string) (any, error) {
+			return strconv.Unquote(s)
+		})
 }
 
 // WithExactmatch returns a Term which has to match the exact token

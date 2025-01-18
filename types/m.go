@@ -105,6 +105,46 @@ func (m *M) Passthrough(p Parser) *M {
 	})
 }
 
+// Text is shorthand for chaining a text parser onto m, it is equivalent
+// to:
+//
+//	m.Passthrough(Text(category))
+func (m *M) Text(category rune) *M {
+	return m.Passthrough(Text(category))
+}
+
+// Id is shorthand for chaining an ident parser onto m, it is equivalent
+// to:
+//
+//	m.Passthrough(Id(s))
+func (m *M) Id(s string) *M {
+	return m.Passthrough(Id(s))
+}
+
+// Int is shorthand for chaining an integer parser onto m, it is
+// equivalent to:
+//
+//	m.Passthrough(Int())
+func (m *M) Int() *M {
+	return m.Passthrough(Int())
+}
+
+// Float is shorthand for chaining a flaot parser onto m, it is
+// equivalent to:
+//
+//	m.Passthrough(Float)
+func (m *M) Float() *M {
+	return m.Passthrough(Float())
+}
+
+// String is shorthand for chaining a string parser onto m, it is
+// equivalent to:
+//
+//	m.Passthrough(String())
+func (m *M) String() *M {
+	return m.Passthrough(String())
+}
+
 // Lazy chains a continuation which chooses the "next" Parser to
 // continue the execution with on to the end of m, this will be invoked
 // with the result of the "previous" continuation. How parsers are

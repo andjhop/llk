@@ -8,27 +8,17 @@ combine primitives to construct complex parsers from less complex parsers in suc
 result is always  LL(\*). The following is an example of how an recogniser for arithmetic
 expressions might be constructed:
 ```go
-package main
-
-import "github.com/andjhop/llk"
-
-func main() {
-    var p llk.Parser
-
-    p = llk.
-        EitherInt().
-        Chain(llk.SeqText('(').
-            Lazy(func(any) llk.Parser {
-                return p
-            }).
-            Text('+').
-            Lazy(func(any) llk.Parser {
-                return p
-            }).
-            Chain(')'))
-
-    p.Parse("((1 + 2) + (3 + (4 + 5)))")
-}
+p = llk.
+    EitherInt().
+    Chain(llk.SeqText('(').
+        Lazy(func(any) llk.Parser {
+            return p
+        }).
+        Text('+').
+        Lazy(func(any) llk.Parser {
+            return p
+        }).
+        Text(')'))
 ```
 
 
@@ -36,7 +26,7 @@ func main() {
 The implied lexical structure of any text input into an llk parser is just as you'd expect from a Go
 program. llk uses the standard library package `scanner.Scanner` internally and so recognises the
 same lexical elements as Go language spec, skipping all whitespace and Go line comments starting
-with `//`; and general comments starting with `/*` and ending with `*/`:
+with `//`; and general comments startink with `/*` and ending with `*/`:
 
 * `scanner.Ident` An Identier; just a sequence of one more more letters and digits which entities in
   go such as variabels and types. An identifier is a sequence of one or more letters and digits.
@@ -64,7 +54,7 @@ available
   returns the corresponding value as a float64
 * `String()` String returns a terminal parser  which parsers a  quoted string literal
 
-These primitives can be combined using the combinators or "chainable" constructors. This is a parser
+These primitives can be combined using the combinators or "chainable" constructors: `Seq` and `Either`. This is a parser
 defined by the type: `Chain` and the corresponding operations: `a.Chain(b)` which returns a new
 Parser composed of two parsers `a` and `b`;  and `a.Lazy(func(any) Parser { return b })` which does the
 same but allows the choice of be to be deferred until execution time. The two primary "chainables"

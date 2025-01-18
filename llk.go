@@ -6,7 +6,6 @@
 package llk
 
 import (
-	"strconv"
 	"strings"
 	"text/scanner"
 
@@ -94,53 +93,6 @@ func (t *tokeniser) Peek() (token types.Token, ok bool) {
 	return t.tokens[t.loc], true
 }
 
-// Text returns a Parser which parses a unicode character and only
-// succeeds if the parsed token text matches the character specified by
-// the category
-func Text(category rune) types.Term {
-	return types.NewTerm("text", category)
-}
-
-// Id returns a Parser which parsers a go idenitfier and only succeeds
-// if the parsed token text exactly matches the string specified by s
-func Id(s string) types.Term {
-	return types.
-		NewTerm("identifer", scanner.Ident).
-		WithExactMatch(s)
-}
-
-// Int returns a Parser which parsers a go decimal literal and returns
-// an returns the corresponding value as an int64 in the parser
-// result
-func Int() types.Term {
-	return types.
-		NewTerm("integer", scanner.Int).
-		WithConverter(func(s string) (any, error) {
-			return strconv.ParseInt(s, 10, 64)
-		})
-}
-
-// Int returns a Parser which parsers a go floating point literal and
-// returns an returns the corresponding value as an float64 in the
-// parser result
-func Float() types.Term {
-	return types.
-		NewTerm("float", scanner.Float).
-		WithConverter(func(s string) (any, error) {
-			return strconv.ParseFloat(s, 64)
-		})
-}
-
-// String returns a Parser which parsers a go quoted string literal and
-// returns an returns the corresponding value as astring
-func String() types.Term {
-	return types.
-		NewTerm("quoted string", scanner.String).
-		WithConverter(func(s string) (any, error) {
-			return strconv.Unquote(s)
-		})
-}
-
 // Seq returns a chainable parser which applies parsers in sequence to
 // the input token stream. That is, it applies the first parser a to the
 // input, and for each finishing location, applies the next parser,
@@ -188,6 +140,46 @@ func Seq(n string, p types.Parser) Chain {
 	}).WithName(n).Chain(p)
 }
 
+// SeqText is shorthand for creating a sequence chain from a text parser
+// It is the equivalent to:
+//
+//	Seq("name", types.Text(s))
+func SeqText(name string, category rune) Chain {
+	return Seq(name, types.Text(category))
+}
+
+// SeqText is shorthand for creating a sequence chain from an ident
+// parser It is the equivalent to:
+//
+//	Seq("name", types.Id, (s))
+func SeqId(name, s string) Chain {
+	return Seq(name, types.Id(s))
+}
+
+// SeqInt is shorthand for creating a sequence chain from an integer
+// parser It is the equivalent to:
+//
+//	Seq("name", types.Int())
+func SeqInt(name string) Chain {
+	return Seq(name, types.Int())
+}
+
+// SeqFloat is shorthand for creating a sequence chain from a float
+// parser. It is the equivalent to:
+//
+//	Seq("name", types.Float())
+func SeqFloat(name string) Chain {
+	return Seq(name, types.Float())
+}
+
+// SeqString is shorthand for creating a sequence chain from a quoted
+// string parser. It is the equivalent to:
+//
+//	Seq("name", types.String())
+func SeqString(name string) Chain {
+	return Seq(name, types.String())
+}
+
 // Either returns a chainable parser which applies all parsers to the
 // input text and succeeds if any one parser succeedes, the following:
 //
@@ -201,4 +193,45 @@ func Either(n string, p types.Parser) Chain {
 		r = c.Result().Join(c.Parse(s))
 		return
 	}).WithName(n).Chain(p)
+
+}
+
+// EitherText is shorthand for creating a alternate chain from a text
+// parser It is the equivalent to:
+//
+//	Either(Text(s))
+func EitherText(name string, category rune) Chain {
+	return Either(name, types.Text(category))
+}
+
+// EitherText is shorthand for creating a alternate chain from an ident
+// parser It is the equivalent to:
+//
+//	Either(Text(s))
+func EitherId(name, s string) Chain {
+	return Either(name, types.Id(s))
+}
+
+// EitherInt is shorthand for creating a alternate chain from an integer
+// parser It is the equivalent to:
+//
+//	Either(Int())
+func EitherInt(name string) Chain {
+	return Either(name, types.Int())
+}
+
+// EitherFloat is shorthand for creating a alternate chain from a float
+// parser. It is the equivalent to:
+//
+//	Either(Float())
+func EitherFloat(name string) Chain {
+	return Either(name, types.Float())
+}
+
+// EitherString is shorthand for creating a alternate chain from a
+// quoted string parser. It is the equivalent to:
+//
+//	Either(String())
+func EitherString(name string) Chain {
+	return Either(name, types.String())
 }
