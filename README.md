@@ -28,8 +28,11 @@ program. llk uses the standard library package `scanner.Scanner` internally and 
 same lexical elements as defined in the go language spec, skipping all whitespace and comments:
 
 * `scanner.Ident` An Identier; just a sequence of one more more letters and digits
+
 * `scanner.Int` Integer literals representing integer constants
+  
 * `scanner.Float` Floating-point literals representing floating-point constants
+  
 * `scanner.String` String literals represents character sequences
 
 ### Parsing and Parser Combinator Types
@@ -38,17 +41,22 @@ primitive parsers `Empty` and `Term` can be created using:
 
 * `NewEmpty(v any)` Returns a new parser that recognises the empty string and so always succeeds
   with the result value v.
+  
 * `NewTerm(category rune)` Returns a new parser that recognises a token of the given category
   and only succeeds if there is a match
 
 To ease the creation of primitives, the following shorthands for creating terminal parsers are
 available:
 * `Text()` Returns a terminal parser which parses a unicode character
+  
 * `Id(string)` Returns a terminal parser which recognises a single identifier
-* `Int()` Returns a terminal parser which recognises a single integer literal and returns the
+  
+* `Int()` Returns a terminal parser which recognises a single integer literal and returns th
   corresponding value as an int64
+  
 * `Float()` Returns a terminal parser which parsers a go floating point literal and returns an
   returns the corresponding value as a float64
+  
 * `String()` Returns a terminal parser  which parsers a  quoted string literal
 
 These primitives can be combined using the combinators or "chainable" constructors: `Seq` and `Either`. This is a parser
@@ -61,6 +69,7 @@ constructors are:
   constituent parsers to succeed in sequence. For example, the primitive parsers `Id('a')` which
   recognises the input text `a`, and  `Id('b')` which recognise the input text `b` can be combined
   using `Seq(Id('a')).Chain(Id('b'))` to construct a new parser which regonises the input `ab`.
+  
 * `Either(Parser)` Which combines constituent parsers, returning an new parser which succeeds if
   even a single of its constituent parsers succeeds. `Either(Id('a')).Chain(Id('b'))` returns a
   parser which succeeds on either of the inputs `a` or `b`.
