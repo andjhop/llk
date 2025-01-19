@@ -25,8 +25,7 @@ p = llk.
 ### Scanning and Lexical Rules and Types
 The implied lexical structure of any text input into an llk parser is just as you'd expect from a Go
 program. llk uses the standard library package `scanner.Scanner` internally and so recognises the
-same lexical elements as Go language spec, skipping all whitespace and Go line comments starting
-with `//`; and general comments startink with `/*` and ending with `*/`:
+same lexical elements as defined in the go language spec, skipping all whitespace and comments:
 
 * `scanner.Ident` An Identier; just a sequence of one more more letters and digits
 * `scanner.Int` Integer literals representing integer constants
