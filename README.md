@@ -28,11 +28,10 @@ program. llk uses the standard library package `scanner.Scanner` internally and 
 same lexical elements as Go language spec, skipping all whitespace and Go line comments starting
 with `//`; and general comments startink with `/*` and ending with `*/`:
 
-* `scanner.Ident` An Identier; just a sequence of one more more letters and digits which entities in
-  go such as variabels and types. An identifier is a sequence of one or more letters and digits.
-* `scanner.Int` Integer literals representing reinteger constants.
-* `scanner.Float` Floating-point literals representing floating-point constants.
-* `scanner.String` String literals represents a character sequences
+* `scanner.Ident` An Identier; just a sequence of one more more letters and digits
+* `scanner.Int` Integer literals representing integer constants
+* `scanner.Float` Floating-point literals representing floating-point constants
+* `scanner.String` String literals represents character sequences
 
 ### Parsing and Parser Combinator Types
 Primitive parsers parse a single lexical element and either succeed or fail. The two primitive most
