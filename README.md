@@ -43,7 +43,7 @@ primitive parsers `Empty` and `Term` can be created using:
   and only succeeds if there is a match
 
 To ease the creation of primitives, the following shorthands for creating terminal parsers are
-available
+available:
 * `Text()` Returns a terminal parser which parses a unicode character
 * `Id(string)` Returns a terminal parser which recognises a single identifier
 * `Int()` Returns a terminal parser which recognises a single integer literal and returns the
