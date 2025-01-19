@@ -1,6 +1,6 @@
 # llk
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/andjam/btree.svg)](https://pkg.go.dev/github.com/andjam/llk)
+[![Go Reference](https://pkg.go.dev/badge/github.com/andjam/btree.svg)](https://pkg.go.dev/github.com/andjhop/llk)
 
 llk is a [parser combinator](https://en.wikipedia.org/wiki/Parser_combinator) library for building
 LL(\*) parsers. Without the jargon, this means that llk offers a bunch of primitives and ways to
