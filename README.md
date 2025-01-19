@@ -67,3 +67,19 @@ constructors are:
 * `Either(Parser)` Which combines constituent parsers, returning an new parser which succeeds if
   even a single of its constituent parsers succeeds. `Either(Id('a')).Chain(Id('b'))` returns a
   parser which succeeds on either of the inputs `a` or `b`.
+
+
+
+"invalid UTF-8 encoding"
+"invalid character NUL"
+"invalid radix point in "
+" has no digits"
+"exponent has no digits"
+"hexadecimal mantissa requires a 'p' exponent"
+"'_' must separate successive digits"
+"invalid char escape"
+"invalid char escape"
+"literal not terminated"
+"literal not terminated"
+"invalid char literal"
+"comment not terminated"

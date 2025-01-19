@@ -48,6 +48,14 @@ func NewTokeniser(r *strings.Reader) *tokeniser {
 	}
 }
 
+func (t tokeniser) Line() int {
+	return t.scanner.Pos().Line
+}
+
+func (t tokeniser) Column() int {
+	return t.scanner.Pos().Column
+}
+
 // Loc returns the current location of the Tokeniser
 func (t tokeniser) Loc() int {
 	return t.loc
@@ -79,10 +87,19 @@ func (t *tokeniser) Seek(loc int) {
 // Peek returns the Token at the current location of the tokeniser
 // without actually advancing the location. Peak also returns the flag
 // ok, indicating whether or not we reached the end of the input
-func (t *tokeniser) Peek() (token types.Token, ok bool) {
+func (t *tokeniser) Peek() (token types.Token, scanErr types.ScanErr) {
 	if t.loc >= len(t.tokens) {
+		errMsg := ""
+		t.scanner.Error = func(_ *scanner.Scanner, m string) {
+			errMsg = m
+		}
 		category := t.scanner.Scan()
 		if category == scanner.EOF {
+			scanErr = types.NewScanErr(types.ScanErrEOF, "")
+			return
+		}
+		if errMsg != "" {
+			scanErr = types.NewScanErr(types.ScanErrMsg, errMsg)
 			return
 		}
 		t.tokens = append(
@@ -90,7 +107,8 @@ func (t *tokeniser) Peek() (token types.Token, ok bool) {
 			types.NewToken(category, t.scanner.TokenText()),
 		)
 	}
-	return t.tokens[t.loc], true
+	token = t.tokens[t.loc]
+	return
 }
 
 // Seq returns a chainable parser which applies parsers in sequence to
@@ -130,7 +148,7 @@ func Seq(n string, p types.Parser) Chain {
 		case types.Failed:
 			r = c.Result()
 		case types.Succeeded:
-			r = types.NewFailed("")
+			r = types.NewFailed("", "")
 		}
 		for loc := range c.Result().Locs() {
 			s.Seek(loc)

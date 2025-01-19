@@ -4,17 +4,17 @@ package types
 // the "previous" parse in a chain. This can be used to delay the choice
 // of the the "next" parser until parse time, and is useful for defining
 // parsers recursively
-type lazy func(r any) Parser
+type lazy[V any] func(r V) Parser[V]
 
-func NewLazy(p Parser) lazy {
-	return func(any) Parser {
+func NewLazy[V any](p Parser[V]) lazy[V] {
+	return func(V) Parser[V] {
 		return p
 	}
 }
 
-func Wrap(f func(any) any) lazy {
-	return func(r any) Parser {
-		return NewEmpty(f(r))
+func Wrap[V any](f func(V) V) lazy[V] {
+	return func(r V) Parser[V] {
+		return NewEmpty[V](f(r))
 	}
 }
 
@@ -27,7 +27,7 @@ func Wrap(f func(any) any) lazy {
 // determined by the behvaiour of the folder function. Chaining
 // continuations together should be done in a way that the chaining
 // operation is associative
-type M struct {
+type M[V any] struct {
 	// name is the optional name of the parser used in
 	// error messages
 	name string
@@ -36,22 +36,22 @@ type M struct {
 	// together, it takes the previous result and next
 	// continuation and combines them to create the next
 	// result
-	folder func(*M, Tokeniser) Result
+	folder func(*M[V], Tokeniser) Result[V]
 
 	// result is the result of invoking the previous
 	// continuation is the result of invoking the
 	// previous continuation
-	result Result
+	result Result[V]
 
 	// lazies is the next continuation result is the
 	// result of invoking the previous continuation
 	// right is the next continuation result is the
 	// result of invoking the
-	lazies []lazy
+	lazies []lazy[V]
 }
 
-func NewM(f func(*M, Tokeniser) Result) *M {
-	return &M{
+func NewM[V any](f func(*M[V], Tokeniser) Result[V]) *M[V] {
+	return &M[V]{
 		folder: f,
 		result: Failed{},
 	}
@@ -59,32 +59,32 @@ func NewM(f func(*M, Tokeniser) Result) *M {
 
 // WithName sets the name of M to the name given by n, this is the name
 // used in parser error messages
-func (m *M) WithName(s string) *M {
+func (m *M[V]) WithName(s string) *M[V] {
 	m.name = s
 	return m
 }
 
 // WithResult sets the value of the of the "previous" continuation
 // result to r, this represents a continuation who
-func (m *M) WithResult(r Result) *M {
+func (m *M[V]) WithResult(r Result[V]) *M[V] {
 	m.result = r
 	return m
 }
 
 // WithLazies returns a chainable parser with the continations
 // specified by lazies
-func (m *M) WithLazies(lazies ...lazy) *M {
+func (m *M[V]) WithLazies(lazies ...lazy[V]) *M[V] {
 	m.lazies = append(m.lazies, lazies...)
 	return m
 }
 
-func (m *M) Name() string {
+func (m *M[V]) Name() string {
 	return m.name
 }
 
 // Result returns the result of invoking the previous continuation is
 // the result of invoking the previous continuation
-func (m *M) Result() Result {
+func (m *M[V]) Result() Result[V] {
 	return m.result
 }
 
@@ -96,9 +96,9 @@ func (m *M) Result() Result {
 //	// tbc
 //
 // ...
-func (m *M) Passthrough(p Parser) *M {
+func (m *M[V]) Passthrough(p Parser[V]) *M[V] {
 	n := NewM(m.folder).Chain(p)
-	return m.Lazy(func(v any) Parser {
+	return m.Lazy(func(v any) Parser[V] {
 		return n.Return(func(any) any {
 			return v
 		})
@@ -109,7 +109,7 @@ func (m *M) Passthrough(p Parser) *M {
 // to:
 //
 //	m.Passthrough(Text(category))
-func (m *M) Text(category rune) *M {
+func (m *M[V]) Text(category rune) *M[V] {
 	return m.Passthrough(Text(category))
 }
 
@@ -117,7 +117,7 @@ func (m *M) Text(category rune) *M {
 // to:
 //
 //	m.Passthrough(Id(s))
-func (m *M) Id(s string) *M {
+func (m *M[V]) Id(s string) *M[V] {
 	return m.Passthrough(Id(s))
 }
 
@@ -125,7 +125,7 @@ func (m *M) Id(s string) *M {
 // equivalent to:
 //
 //	m.Passthrough(Int())
-func (m *M) Int() *M {
+func (m *M[V]) Int() *M[V] {
 	return m.Passthrough(Int())
 }
 
@@ -133,7 +133,7 @@ func (m *M) Int() *M {
 // equivalent to:
 //
 //	m.Passthrough(Float)
-func (m *M) Float() *M {
+func (m *M[V]) Float() *M[V] {
 	return m.Passthrough(Float())
 }
 
@@ -141,7 +141,7 @@ func (m *M) Float() *M {
 // equivalent to:
 //
 //	m.Passthrough(String())
-func (m *M) String() *M {
+func (m *M[V]) String() *M[V] {
 	return m.Passthrough(String())
 }
 
@@ -166,7 +166,7 @@ func (m *M) String() *M {
 //			return c
 //		})
 
-func (m *M) Lazy(lazies ...lazy) *M {
+func (m *M[V]) Lazy(lazies ...lazy[V]) *M[V] {
 	return NewM(m.folder).
 		WithResult(m.result).
 		WithLazies(m.lazies...).
@@ -184,7 +184,7 @@ func (m *M) Lazy(lazies ...lazy) *M {
 // Can be abbreviated to:
 //
 //	a.Chain(b)
-func (m *M) Chain(p Parser) *M {
+func (m *M[V]) Chain(p Parser[V]) *M[V] {
 	return m.Lazy(NewLazy(p))
 }
 
@@ -202,7 +202,7 @@ func (m *M) Chain(p Parser) *M {
 // Can be abbreviated to:
 //
 //	a.Return(f)
-func (m *M) Return(f func(any) any) *M {
+func (m *M[V]) Return(f func(any) any) *M[V] {
 	return m.Lazy(Wrap(f))
 }
 
@@ -211,12 +211,15 @@ func (m *M) Return(f func(any) any) *M {
 // result obtained from applying the parser returned by continuation a
 // to the token stream. The result returned by the folder function over
 // the continuation chain is the parse result.
-func (m *M) Parse(t Tokeniser) (r Result) {
+func (m *M[V]) Parse(t Tokeniser) (r Result[V]) {
 	if len(m.lazies) == 0 {
 		return
 	}
 	lazy := m.lazies[0]
 	r = lazy(m.result.value()).Parse(t)
+	if halt, ok := r.(Halt[any]); ok {
+		return halt
+	}
 
 	if len(m.lazies) == 1 {
 		return
