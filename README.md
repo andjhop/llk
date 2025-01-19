@@ -44,14 +44,13 @@ primitive parsers `Empty` and `Term` can be created using:
 
 To ease the creation of primitives, the following shorthands for creating terminal parsers are
 available
-* `Text()` Returns a terminal parser  which parses a unicode character and only succeeds if the
-  parsed token text matches the character specified by the category
+* `Text()` Returns a terminal parser which parses a unicode character
 * `Id(string)` Returns a terminal parser which recognises a single identifier
 * `Int()` Returns a terminal parser which recognises a single integer literal and returns the
   corresponding value as an int64
 * `Float()` Returns a terminal parser which parsers a go floating point literal and returns an
   returns the corresponding value as a float64
-* `String()` String returns a terminal parser  which parsers a  quoted string literal
+* `String()` Returns a terminal parser  which parsers a  quoted string literal
 
 These primitives can be combined using the combinators or "chainable" constructors: `Seq` and `Either`. This is a parser
 defined by the type: `Chain` and the corresponding operations: `a.Chain(b)` which returns a new
