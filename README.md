@@ -10,15 +10,16 @@ expressions might be constructed:
 ```go
 p = k.
     EitherInt().
-    Chain(k.SeqText('(').
-        Lazy(func(any) k.Parser {
-            return p
-        }).
-        Text('+').
-        Lazy(func(any) k.Parser {
-            return p
-        }).
-        Text(')'))
+    Chain(k.
+        SeqText('(').
+            Lazy(func(any) k.Parser {
+                return p
+            }).
+            Text('+').
+            Lazy(func(any) k.Parser {
+                return p
+            }).
+            Text(')'))
 ```
 
 
