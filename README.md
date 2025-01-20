@@ -40,7 +40,7 @@ primitive parsers `Empty` and `Term` can be created using:
 * `NewEmpty(v any)` A parser that always succeeds with the value v
 * `NewTerm(category rune)` A parser that only succeeds for the given category
 
-To ease the creation of primitives, the following shorthands for creating terminal parsers are
+To ease the creation of primitives, the following shorthands for creating `Term` or terminal parsers are
 available:
 
 * `Text()` A parser which parses a unicode character 
@@ -55,11 +55,16 @@ Parser composed of two parsers `a` and `b`;  and `a.Lazy(func(any) Parser { retu
 same but allows the choice of be to be deferred until execution time. The two primary "chainables"
 constructors are:
 
-* `Seq(Parser)` Which combines subsequent chained parsers, returning a new Parser which requires all
+* `Seq(Parser)`
+* `Either(Parser)`
+
+#### `Seq(Parser)`
+combines subsequent chained parsers, returning a new Parser which requires all
   constituent parsers to succeed in sequence. For example, the primitive parsers `Id('a')` which
   recognises the input text `a`, and  `Id('b')` which recognise the input text `b` can be combined
   using `Seq(Id('a')).Chain(Id('b'))` to construct a new parser which regonises the input `ab`.
-  
-* `Either(Parser)` Which combines constituent parsers, returning an new parser which succeeds if
+
+#### `Either(Parser)`
+ Combines constituent parsers, returning an new parser which succeeds if
   even a single of its constituent parsers succeeds. `Either(Id('a')).Chain(Id('b'))` returns a
   parser which succeeds on either of the inputs `a` or `b`.
