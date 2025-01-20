@@ -37,25 +37,17 @@ same lexical elements as defined in the go language spec, skipping all whitespac
 Primitive parsers parse a single lexical element and either succeed or fail. The two primitive most
 primitive parsers `Empty` and `Term` can be created using:
 
-* `NewEmpty(v any)` Returns a new parser that recognises the empty string and so always succeeds
-  with the result value v.
-  
-* `NewTerm(category rune)` Returns a new parser that recognises a token of the given category
-  and only succeeds if there is a match
+* `NewEmpty(v any)` A parser that always succeeds with the value v
+* `NewTerm(category rune)` A parser that only succeeds for the given category
 
 To ease the creation of primitives, the following shorthands for creating terminal parsers are
 available:
-* `Text()` Returns a terminal parser which parses a unicode character
-  
-* `Id(string)` Returns a terminal parser which recognises a single identifier
-  
-* `Int()` Returns a terminal parser which recognises a single integer literal and returns th
-  corresponding value as an int64
-  
-* `Float()` Returns a terminal parser which parsers a go floating point literal and returns an
-  returns the corresponding value as a float64
-  
-* `String()` Returns a terminal parser  which parsers a  quoted string literal
+
+* `Text()` A parser which parses a unicode character 
+* `Id(string)` A parser which recognises a single identifier
+* `Int()` A parser which recognises an integer literl
+* `Float()` A Parser which recognises a floating-literal
+* `String()` A Parser which recgonises a quoted string
 
 These primitives can be combined using the combinators or "chainable" constructors: `Seq` and `Either`. This is a parser
 defined by the type: `Chain` and the corresponding operations: `a.Chain(b)` which returns a new
