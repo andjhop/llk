@@ -29,11 +29,8 @@ program. llk uses the standard library package `scanner.Scanner` internally and 
 same lexical elements as defined in the go language spec, skipping all whitespace and comments:
 
 * `scanner.Ident` An Identier; just a sequence of one more more letters and digits
-
-* `scanner.Int` Integer literals representing integer constants
-  
-* `scanner.Float` Floating-point literals representing floating-point constants
-  
+* `scanner.Int` Integer literals representing integer constants  
+* `scanner.Float` Floating-point literals representing floating-point constants  
 * `scanner.String` String literals represents character sequences
 
 ### Parsing and Parser Combinator Types
