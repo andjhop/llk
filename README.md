@@ -8,14 +8,14 @@ combine primitives to construct complex parsers from less complex parsers in suc
 result is always  LL(\*). The following is an example of how an recogniser for arithmetic
 expressions might be constructed:
 ```go
-p = llk.
+p = k.
     EitherInt().
-    Chain(llk.SeqText('(').
-        Lazy(func(any) llk.Parser {
+    Chain(k.SeqText('(').
+        Lazy(func(any) k.Parser {
             return p
         }).
         Text('+').
-        Lazy(func(any) llk.Parser {
+        Lazy(func(any) k.Parser {
             return p
         }).
         Text(')'))
