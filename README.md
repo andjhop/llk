@@ -59,7 +59,7 @@ constructors are:
 * `Either(Parser)`
 
 #### `Seq(Parser)`
-combines subsequent chained parsers, returning a new Parser which requires all
+Combines subsequent chained parsers, returning a new Parser which requires all
   constituent parsers to succeed in sequence. For example, the primitive parsers `Id('a')` which
   recognises the input text `a`, and  `Id('b')` which recognise the input text `b` can be combined
   using `Seq(Id('a')).Chain(Id('b'))` to construct a new parser which regonises the input `ab`.
