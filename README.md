@@ -45,7 +45,7 @@ available:
 
 * `Text()` A parser which parses a unicode character 
 * `Id(string)` A parser which recognises a single identifier
-* `Int()` A parser which recognises an integer literl
+* `Int()` A parser which recognises an integer literal
 * `Float()` A Parser which recognises a floating-point literal
 * `String()` A Parser which recgonises a quoted string
 
